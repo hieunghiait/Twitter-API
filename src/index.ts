@@ -1,5 +1,6 @@
 import express from 'express'
 import usersRouter from './routes/users.routers'
+import databaseService from './services/database.service'
 const app = express()
 const port = 1234
 const router = express.Router()
@@ -14,21 +15,8 @@ router.use(
     next()
   }
 )
-router.get('/tweets', (req, res) => {
-  res.json({
-    data: [
-      {
-        _id: 1,
-        text: 'Le Hieu Nghia'
-      },
-      {
-        _id: 2,
-        text: 'Nguyen Van A'
-      }
-    ]
-  })
-})
 app.use('/users', usersRouter)
+databaseService.connect()
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
