@@ -1,6 +1,6 @@
 import express from 'express'
 import usersRouter from './routes/users.routers'
-import databaseService from './services/database.service'
+import databaseService from './services/database.services'
 const app = express()
 const port = 1234
 const router = express.Router()
