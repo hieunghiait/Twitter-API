@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
+import { checkSchema } from 'express-validator'
+import { validate } from '~/utils/validation'
 
 export const loginValidator = (req: Request, res: Response, next: NextFunction) => {
   console.log(req.body)
@@ -10,3 +12,73 @@ export const loginValidator = (req: Request, res: Response, next: NextFunction) 
   }
   next()
 }
+export const registerValidator = validate(
+  checkSchema({
+    name: {
+      notEmpty: true,
+      isLength: {
+        options: {
+          min: 1,
+          max: 100
+        }
+      },
+      trim: true
+    },
+    email: {
+      notEmpty: true,
+      isEmail: true,
+      trim: true
+    },
+    password: {
+      notEmpty: true,
+      isString: true,
+      isLength: {
+        options: {
+          min: 6,
+          max: 50
+        }
+      },
+      trim: true,
+      isStrongPassword: {
+        options: {
+          minLength: 6,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1
+        },
+        errorMessage:
+          'Password must be at least 6 characters long and contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol'
+      }
+    },
+    confirm_password: {
+      isStrongPassword: {
+        options: {
+          minLength: 6,
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1
+        },
+        errorMessage:
+          'Password must be at least 6 characters long and contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol'
+      },
+      custom: {
+        options: (value, { req }) => {
+          if (value !== req.body.password) {
+            throw new Error('Passwords confirmation does not match')
+          }
+          return true
+        }
+      }
+    },
+    date_of_birth: {
+      isISO8601: {
+        options: {
+          strict: true,
+          strictSeparator: true
+        }
+      }
+    }
+  })
+)
