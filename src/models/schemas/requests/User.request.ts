@@ -1,3 +1,4 @@
+//Defines the request body for the user model
 export interface RegisterReqBody {
   name: string
   email: string
