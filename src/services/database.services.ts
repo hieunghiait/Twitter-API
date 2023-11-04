@@ -18,17 +18,12 @@ class DataService {
       console.log('Pinged your deployment. You successfully connected to MongoDB!')
     } catch (error) {
       console.log('There was an error connecting to MongoDB. Check your connection uri.')
-      console.log(error)
+      console.error(error)
     }
   }
-  //Get collection user
   get users(): Collection<User> {
-    //Return collection users
-    console.log(process.env.DB_USERS_COLLECTION)
     return this.db.collection(process.env.DB_USERS_COLLECTION as string)
   }
 }
-//Create instance of DataService
 const databaseService = new DataService()
-//Export instance of DataService
 export default databaseService

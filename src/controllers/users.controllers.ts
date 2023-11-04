@@ -1,30 +1,29 @@
 import { Request, Response } from 'express'
-import User from '~/models/schemas/User.schema'
-import databaseService from '~/services/database.services'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { RegisterReqBody } from '~/models/schemas/requests/User.request'
 import userService from '~/services/users.services'
-
+import { StatusCodes } from 'http-status-codes'
 export const loginController = (req: Request, res: Response) => {
   const { email, password } = req.body
   if (email === 'lehieunghia2402@gmail.com' && password === 'Nghia2002') {
-    return res.status(200).json({
+    return res.status(StatusCodes.OK).json({
       message: 'Login successfully'
     })
   }
-  return res.status(400).json({
+  return res.status(StatusCodes.BAD_REQUEST).json({
     error: 'Login failed'
   })
 }
-// create funtion registerController
-export const registerController = async (req: Request, res: Response) => {
-  const { email, password } = req.body
+
+export const registerController = async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response) => {
   try {
-    const result = await userService.register({ email, password })
-    return res.status(201).json({
+    const result = await userService.register(req.body)
+    return res.status(StatusCodes.CREATED).json({
       message: 'Register successfully',
       data: result
     })
   } catch (error) {
-    return res.status(400).json({
+    return res.status(StatusCodes.BAD_REQUEST).json({
       error: 'Register failed'
     })
   }
