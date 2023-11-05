@@ -1,5 +1,7 @@
 import e, { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
+import { StatusCodes } from 'http-status-codes'
+import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
 import { validate } from '~/utils/validation'
@@ -17,6 +19,7 @@ export const registerValidator = validate(
   checkSchema({
     name: {
       notEmpty: true,
+      isString: true,
       isLength: {
         options: {
           min: 1,

@@ -1,6 +1,6 @@
 # Backend-Twitter-API-NodeJS-TS
 
-## Author: Nghia Le
+## Author: [Nghia Hieu Le](mailto:lehieunghia2402@gmail.com)
 
 This project is a backend API for a Twitter-like application, built with Node.js and TypeScript.
 
