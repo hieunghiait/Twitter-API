@@ -1,4 +1,4 @@
-# Backend-Twitter-API-NodeJS-TS
+# Backend-Twitter-API-NodeJS-Typescript
 
 ## Author: [Nghia Hieu Le](mailto:lehieunghia2402@gmail.com)
 
