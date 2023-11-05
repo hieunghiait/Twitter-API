@@ -51,5 +51,5 @@ class UserServices {
     return Boolean(user)
   }
 }
-const userService = new UserServices()
-export default userService
+const usersService = new UserServices()
+export default usersService
