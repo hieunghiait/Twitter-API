@@ -3,15 +3,16 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { RegisterReqBody } from '~/models/requests/User.request'
 import usersService from '~/services/users.services'
 import { StatusCodes } from 'http-status-codes'
-export const loginController = (req: Request, res: Response) => {
-  const { email, password } = req.body
-  if (email === 'lehieunghia2402@gmail.com' && password === 'Nghia2002') {
-    return res.status(StatusCodes.OK).json({
-      message: 'Login successfully'
-    })
-  }
-  return res.status(StatusCodes.BAD_REQUEST).json({
-    error: 'Login failed'
+import HTTP_STATUS from '~/constants/httpStatus'
+
+export const loginController = async (req: Request, res: Response) => {
+  const { user }: any = req
+  const user_id = user._id
+  throw new Error('Not implemented')
+  const result = await usersService.login(undefined as any)
+  return res.status(HTTP_STATUS.OK).json({
+    message: 'Login successfully',
+    data: result
   })
 }
 
