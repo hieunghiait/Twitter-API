@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import { USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import userService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
+import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 
 export const loginValidator = validate(
@@ -50,7 +52,7 @@ export const loginValidator = validate(
         errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG
       }
     }
-  })
+  }, ['body'])
 )
 export const registerValidator = validate(
   checkSchema({
@@ -155,6 +157,37 @@ export const registerValidator = validate(
         }
       },
       errorMessage: USERS_MESSAGES.DATE_OF_BIRTH_MUST_BE_ISO8601
+    }
+  }, ['body'])
+)
+export const accessTokenValidator = validate(
+  checkSchema({
+    Authorization: {
+      notEmpty: {
+        errorMessage: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED
+      },
+      custom: {
+        options: async (value: string, { req }) => {
+          //Expaind
+          //Bearer <access_token>
+          //[0] = Bearer
+          //[1] = <access_token>
+          const access_token = value.split(' ')[1]
+          console.log(access_token)
+          //If access_token is empty
+          if (access_token === '') {
+            //Throw error
+            throw new ErrorWithStatus({
+              message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+              status: 401
+            })
+          }
+          //Verify access_token
+          const decoded_authorization = await verifyToken({ token: access_token })
+          req.decoded_authorization = decoded_authorization
+          return true
+        }
+      }
     }
   })
 )
