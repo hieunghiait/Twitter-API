@@ -28,7 +28,6 @@ class DataService {
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
   }
-
 }
 const databaseService = new DataService()
 export default databaseService

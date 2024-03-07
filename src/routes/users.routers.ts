@@ -37,9 +37,13 @@ usersRouter.post('/register', registerValidator, wrapRequestHandler(registerCont
  * Body: {refresh_token: Bear <refresh_token>}
  * Headers: {Authorization: Bearer <access_token>}
  * Success response: {message: 'Logout'}
-*/
-usersRouter.post('/logout', accessTokenValidator, wrapRequestHandler((req, res) => {
-  res.json({ message: 'Logout' })
-}))
+ */
+usersRouter.post(
+  '/logout',
+  accessTokenValidator,
+  wrapRequestHandler((req, res) => {
+    res.json({ message: 'Logout' })
+  })
+)
 
 export default usersRouter
