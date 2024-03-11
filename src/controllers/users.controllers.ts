@@ -6,9 +6,8 @@ import { StatusCodes } from 'http-status-codes'
 import HTTP_STATUS from '~/constants/httpStatus'
 
 export const loginController = async (req: Request, res: Response) => {
-  const { user }: any = req
-  const user_id = user._id
-  throw new Error('Not implemented')
+  const  { user } : any = req
+  const { user_id } = user._id
   const result = await usersService.login(undefined as any)
   return res.status(HTTP_STATUS.OK).json({
     message: 'Login successfully',

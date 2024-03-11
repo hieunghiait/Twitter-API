@@ -4,7 +4,7 @@ import User from '~/models/schemas/User.schema'
 import RefreshToken from '~/models/schemas/Refresh.token.schema'
 config()
 
-const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitterapi.wxtxn8x.mongodb.net/?retryWrites=true&w=majority`
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitterapi.wxtxn8x.mongodb.net/?retryWrites=true&w=majority&appName=TwitterAPI`
 
 class DataService {
   private client: MongoClient

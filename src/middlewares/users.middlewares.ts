@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
+import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
@@ -169,34 +170,52 @@ export const registerValidator = validate(
     ['body']
   )
 )
+
 export const accessTokenValidator = validate(
-  checkSchema({
-    Authorization: {
-      notEmpty: {
-        errorMessage: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED
-      },
-      custom: {
-        options: async (value: string, { req }) => {
-          //Expaind
-          //Bearer <access_token>
-          //[0] = Bearer
-          //[1] = <access_token>
-          const access_token = value.split(' ')[1]
-          console.log(access_token)
-          //If access_token is empty
-          if (access_token === '') {
-            //Throw error
-            throw new ErrorWithStatus({
-              message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
-              status: 401
-            })
+  checkSchema(
+    {
+      Authorization: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED
+        },
+        custom: {
+          options: async (value: string, { req }) => {
+            const access_token = value.replace('Bearer ', '')
+            if (!access_token) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            const decoded_authorization = await verifyToken({ token: access_token })
+            req.decoded_authorization = decoded_authorization
+            return true
           }
-          //Verify access_token
-          const decoded_authorization = await verifyToken({ token: access_token })
-          req.decoded_authorization = decoded_authorization
-          return true
         }
       }
-    }
-  })
+    },
+    ['headers']
+  )
+)
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        notEmpty: {
+          errorMessage: USERS_MESSAGES.REFRESH_TOKEN_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USERS_MESSAGES.REFRESH_TOKEN_MUST_BE_A_STRING
+        },
+        custom: {
+          options: async (value: string, { req }) => {
+            const decoded_refresh_token = await verifyToken({ token: value })
+            console.log(decoded_refresh_token)
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
 )
