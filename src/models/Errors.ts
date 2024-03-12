@@ -1,19 +1,22 @@
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
+
 type ErrorsType = Record<
   string,
   {
     msg: string
     [key: string]: any
   }
-> // { [key: string]: string }
-export class ErrorWithStatus extends Error {
+>
+export class ErrorWithStatus {
+  message: string
   status: number
   constructor({ message, status }: { message: string; status: number }) {
-    super(message)
+    this.message = message
     this.status = status
   }
 }
+
 export class EntityError extends ErrorWithStatus {
   errors: ErrorsType
   constructor({ message = USERS_MESSAGES.VALIDATION_ERROR, errors }: { message?: string; errors: ErrorsType }) {

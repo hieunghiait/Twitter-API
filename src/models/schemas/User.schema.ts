@@ -13,7 +13,6 @@ interface UserType {
   forgot_password_token?: string
   verify?: UserVerifyStatus
 
-  twitter_circle?: ObjectId[]
   bio?: string
   location?: string
   website?: string
@@ -33,7 +32,7 @@ export default class User {
   email_verify_token: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token: string // jwt hoặc '' nếu đã xác thực email
   verify: UserVerifyStatus
-  twitter_circle: ObjectId[] // danh sách id của những người user này add vào circle
+
   bio: string // optional
   location: string // optional
   website: string // optional
@@ -42,7 +41,7 @@ export default class User {
   cover_photo: string // optional
 
   constructor(user: UserType) {
-    const date = new Date() // lấy thời gian hiện tại
+    const date = new Date()
     this._id = user._id
     this.name = user.name || ''
     this.email = user.email
@@ -52,8 +51,7 @@ export default class User {
     this.updated_at = user.updated_at || date
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
-    this.verify = user.verify || UserVerifyStatus.Unverified // 0
-    this.twitter_circle = user.twitter_circle || []
+    this.verify = user.verify || UserVerifyStatus.Unverified
     this.bio = user.bio || ''
     this.location = user.location || ''
     this.website = user.website || ''
