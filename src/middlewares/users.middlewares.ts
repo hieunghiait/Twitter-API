@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
@@ -281,4 +281,3 @@ export const emailVerifyTokenValidator = validate(
     ['body']
   )
 )
-
