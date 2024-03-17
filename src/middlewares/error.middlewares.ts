@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { omit } from 'lodash'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { validate } from '~/utils/validation'
 
 export const defaultErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err)

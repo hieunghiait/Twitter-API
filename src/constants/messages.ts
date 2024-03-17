@@ -35,5 +35,6 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_SUCCESS: 'Email verify success',
   LOGOUT_SUCCESS: 'Logout success',
   USER_ALREADY_VERIFIED: 'User already verified',
-  RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success'
+  RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success',
+  GET_ME_SUCCESS: 'Get my profile success'
 } as const

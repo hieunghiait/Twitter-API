@@ -3,6 +3,13 @@ import jwt, { SignOptions } from 'jsonwebtoken'
 import { TokenPayload } from '~/models/requests/User.request'
 
 config()
+/**
+ * Signs a JWT token with the given payload, private key, and options.
+ * @param payload - The payload to be included in the token.
+ * @param privateKey - The private key used for signing the token.
+ * @param options - Optional sign options for the token.
+ * @returns A promise that resolves to the signed JWT token.
+ */
 export const signToken = ({
   payload,
   privateKey,

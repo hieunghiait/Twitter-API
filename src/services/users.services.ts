@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import { ObjectId } from 'mongodb'
+import { json } from 'stream/consumers'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { RegisterReqBody } from '~/models/requests/User.request'
@@ -98,6 +99,7 @@ class UsersService {
     //MongoDB cập nhật giá trị
     const [token] = await Promise.all([
       this.signAccessAndRefreshToken(user_id),
+      //Cập nhật lại giá trị email_verify_token trong document User
       databaseService.users.updateOne(
         { _id: new ObjectId(user_id) },
         {
@@ -118,18 +120,32 @@ class UsersService {
   }
   async resendVerifyEmail(user_id: string) {
     const email_verify_token = await this.signEmailVerifyToken(user_id)
+    console.log('email verify token: ' + email_verify_token) // In ra token để kiểm tra
     await databaseService.users.updateOne(
       { _id: new ObjectId(user_id) },
       {
         $set: {
           email_verify_token
         },
-        $currentDate: { updated_at: true }
+        $currentDate: {
+          updated_at: true
+        } // Cập nhật thời gian cập nhật
       }
     )
     return {
       message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
     }
+  }
+  /**
+   * Retrieves the user with the specified ID.
+   * @param {string} user_id - The ID of the user to retrieve.
+   * @returns {Promise<User>} - A promise that resolves to the user object.
+   */
+  async getMe(user_id: string) {
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    //log user
+    console.log(user)
+    return user
   }
 }
 

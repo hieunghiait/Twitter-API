@@ -1,24 +1,38 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { LogoutReqBody, RegisterReqBody, TokenPayload, VerifyEmailReqBody } from '~/models/requests/User.request'
+import { LoginReqBody, LogoutReqBody, RegisterReqBody, TokenPayload, VerifyEmailReqBody } from '~/models/requests/User.request'
 import usersService from '~/services/users.services'
-import { StatusCodes } from 'http-status-codes'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import databaseService from '~/services/database.services'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
+import User from '~/models/schemas/User.schema'
 
-export const loginController = async (req: Request, res: Response) => {
-  const { user }: any = req
+/**
+ * Handles the login functionality for users.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns A JSON response with a success message and the login result.
+ */
+export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
+  const user: any = req.user as User
   const user_id = user._id as ObjectId
-  const result = await usersService.login(undefined as any)
-  return res.status(HTTP_STATUS.OK).json({
-    message: 'Login successfully',
-    data: result
+  const result = await usersService.login(user_id.toString())
+  return res.json({
+    message: USERS_MESSAGES.LOGIN_SUCCESS,
+    result
   })
 }
 
+/**
+ * Handles the registration of a user.
+ *
+ * @param req - The request object containing the user registration data.
+ * @param res - The response object used to send the registration success message and result.
+ * @param next - The next function to be called in the middleware chain.
+ * @returns A JSON response with the registration success message and result.
+ */
 export const registerController = async (
   req: Request<ParamsDictionary, any, RegisterReqBody>,
   res: Response,
@@ -31,12 +45,26 @@ export const registerController = async (
   })
 }
 
+/**
+ * Logout controller function.
+ *
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns The JSON response containing the result of the logout operation.
+ */
 export const logoutController = async (req: Request<ParamsDictionary, any, LogoutReqBody>, res: Response) => {
   const { refresh_token } = req.body
   const result = await usersService.logout(refresh_token)
   return res.json(result)
 }
 
+/**
+ * Controller function to verify user email.
+ * @param req - Express request object.
+ * @param res - Express response object.
+ * @param next - Express next function.
+ * @returns A JSON response with the verification result.
+ */
 export const verifyEmailController = async (
   req: Request<ParamsDictionary, any, VerifyEmailReqBody>,
   res: Response,
@@ -65,6 +93,14 @@ export const verifyEmailController = async (
     result
   })
 }
+/**
+ * Resends the verification email for a user.
+ *
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next function.
+ * @returns A JSON response with the result of the resend operation.
+ */
 export const resendVerifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
@@ -80,4 +116,20 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
   }
   const result = await usersService.resendVerifyEmail(user_id)
   return res.json(result)
+}
+/**
+ * Controller function to get the current user's information.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next function.
+ * @returns A JSON response with the success message and the user's information.
+ */
+export const getMeController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  console.log(user_id)
+  const user = await usersService.getMe(user_id)
+  return res.json({
+    message: USERS_MESSAGES.GET_ME_SUCCESS,
+    result: user
+  })
 }

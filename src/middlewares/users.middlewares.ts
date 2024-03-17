@@ -11,6 +11,13 @@ import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 
+/**
+ * Validates the login request body.
+ * @param value - The value to be validated.
+ * @param req - The request object.
+ * @returns A boolean indicating whether the validation passed or not.
+ * @throws An error if the email or password is incorrect.
+ */
 export const loginValidator = validate(
   checkSchema(
     {
@@ -63,6 +70,12 @@ export const loginValidator = validate(
     ['body']
   )
 )
+
+/**
+ * Validates the registration data for a user.
+ * @param {Object} value - The registration data object.
+ * @returns {Object} - The validation result object.
+ */
 export const registerValidator = validate(
   checkSchema(
     {
@@ -172,6 +185,16 @@ export const registerValidator = validate(
     ['body']
   )
 )
+
+/**
+ * Middleware function to validate the access token in the Authorization header.
+ * Throws an error if the access token is missing or invalid.
+ *
+ * @param value - The value of the Authorization header.
+ * @param req - The Express request object.
+ * @returns A boolean indicating whether the access token is valid.
+ * @throws ErrorWithStatus - If the access token is missing or invalid.
+ */
 export const accessTokenValidator = validate(
   checkSchema(
     {
@@ -191,6 +214,7 @@ export const accessTokenValidator = validate(
                 secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
               ;(req as Request).decoded_authorization = decoded_authorization
+              console.log(decoded_authorization)
             } catch (error) {
               throw new ErrorWithStatus({
                 message: capitalize((error as JsonWebTokenError).message),
@@ -205,6 +229,13 @@ export const accessTokenValidator = validate(
     ['headers']
   )
 )
+/**
+ * Middleware function to validate the refresh token.
+ * @param value - The refresh token value.
+ * @param req - The request object.
+ * @returns A boolean indicating whether the validation was successful.
+ * @throws ErrorWithStatus - If the refresh token is missing, expired, or not found in the database.
+ */
 export const refreshTokenValidator = validate(
   checkSchema(
     {
@@ -247,6 +278,15 @@ export const refreshTokenValidator = validate(
     ['body']
   )
 )
+/**
+ * Middleware function to validate the email verification token.
+ * Throws an error if the token is missing or invalid.
+ *
+ * @param value - The email verification token value.
+ * @param req - The request object.
+ * @returns A boolean indicating whether the token is valid.
+ * @throws ErrorWithStatus - If the token is missing or invalid.
+ */
 export const emailVerifyTokenValidator = validate(
   checkSchema(
     {
@@ -272,7 +312,6 @@ export const emailVerifyTokenValidator = validate(
                 status: HTTP_STATUS.UNAUTHORIZED
               })
             }
-
             return true
           }
         }
