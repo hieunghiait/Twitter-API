@@ -3,6 +3,7 @@ import usersRouter from './routes/users.routers'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { MongoClient } from 'mongodb'
+import { pick } from 'lodash'
 const app = express()
 const port = 3000
 //connect to database local

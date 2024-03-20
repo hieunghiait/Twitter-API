@@ -17,6 +17,8 @@ import databaseService from '~/services/database.services'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import User from '~/models/schemas/User.schema'
+import { pick } from 'lodash'
+import { body } from 'express-validator'
 
 /**
  * Handles the login functionality for users.
@@ -163,6 +165,7 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
     result: user
   })
 }
+
 export const updateMeController = async (
   req: Request<ParamsDictionary, any, UpdateMeRequestBody>,
   res: Response,
@@ -170,6 +173,7 @@ export const updateMeController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { body } = req
+  console.log('log body' + body)
   const user = await usersService.updateMe(user_id, body)
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
