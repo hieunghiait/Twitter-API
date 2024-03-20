@@ -1,6 +1,3 @@
-/**
- * @description Messages for users
- */
 export const USERS_MESSAGES = {
   VALIDATION_ERROR: 'Validation error',
   NAME_IS_REQUIRED: 'Name is required',
@@ -26,15 +23,34 @@ export const USERS_MESSAGES = {
   REGISTER_SUCCESS: 'Register success',
   ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
-  REFRESH_TOKEN_MUST_BE_A_STRING: 'Refresh token must be a string',
   REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
+  LOGOUT_SUCCESS: 'Logout success',
   EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
   USER_NOT_FOUND: 'User not found',
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
   EMAIL_VERIFY_SUCCESS: 'Email verify success',
-  LOGOUT_SUCCESS: 'Logout success',
-  USER_ALREADY_VERIFIED: 'User already verified',
   RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success',
-  GET_ME_SUCCESS: 'Get my profile success'
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Check email to reset password',
+  FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
+  VERIFY_FORGOT_PASSWORD_SUCCESS: 'Verify forgot password success',
+  INVALID_FORGOT_PASSWORD_TOKEN: 'Invalid forgot password token',
+  RESET_PASSWORD_SUCCESS: 'Reset password success',
+  GET_ME_SUCCESS: 'Get my profile success',
+  USER_NOT_VERIFIED: 'User not verified',
+  UPDATE_ME_SUCCESS: 'Update my profile success',
+  BIO_MUST_BE_A_STRING: 'Bio must be a string',
+  BIO_LENGTH: 'Bio length must be from 1 to 100',
+  LOCATION_MUST_BE_A_STRING: 'Location must be a string',
+  LOCATION_LENGTH: 'Location length must be from 1 to 100',
+  WEBSITE_MUST_BE_A_STRING: 'Website must be a string',
+  WEBSITE_LENGTH: 'Website length must be from 1 to 100',
+  USERNAME_MUST_BE_A_STRING: 'Username must be a string',
+  USER_NAME_LENGTH: 'Username must be from 1 to 50',
+  AVATAR_MUST_BE_A_STRING: 'Avatar must be a string',
+  AVATAR_LENGTH: 'Avatar length must be from 1 to 100',
+  COVER_PHOTO_MUST_BE_A_STRING: 'Cover photo must be a string',
+  COVER_PHOTO_LENGTH: 'Cover photo length must be from 1 to 100',
+  IMAGE_URL_MUST_BE_STRING: 'Image url must be a string',
+  IMAGE_URL_LENGTH: 'Image url length must be from 1 to 100'
 } as const

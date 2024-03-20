@@ -10,14 +10,18 @@ import {
   logoutController,
   registerController,
   resendVerifyEmailController,
+  updateMeController,
   verifyEmailController
 } from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
   emailVerifyTokenValidator,
+  forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  updateMeValidator,
+  verifiedUserValidator
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -68,6 +72,13 @@ usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(
  * Body: { }
  */
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
+/**
+ * Description. Submit email to reset password, send email to user
+ * Path: /forgot-password
+ * Method: POST
+ * Body: {email: string}
+ */
+usersRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(resendVerifyEmailController))
 
 /**
  * Description. Get my profile
@@ -77,10 +88,18 @@ usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandle
  */
 usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 /**
- * Description. Get my profile
+ * Description. Update my profile
  * Path: /me
- * Method: GET
+ * Method: PATCH
  * Headers: { Authorization: Bearer <access_token> }
+ *  Body: UserSchema
  */
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  updateMeValidator,
+  verifiedUserValidator,
+  wrapRequestHandler(updateMeController)
+)
 
 export default usersRouter
