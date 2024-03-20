@@ -13,6 +13,7 @@ import {
   updateMeController,
   verifyEmailController
 } from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common/common.middlewares'
 import {
   accessTokenValidator,
   emailVerifyTokenValidator,
@@ -23,6 +24,7 @@ import {
   updateMeValidator,
   verifiedUserValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeRequestBody } from '~/models/requests/User.request'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const usersRouter = Router()
@@ -99,6 +101,16 @@ usersRouter.patch(
   accessTokenValidator,
   updateMeValidator,
   verifiedUserValidator,
+  filterMiddleware<UpdateMeRequestBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'username',
+    'avatar',
+    'cover_photo'
+  ]),
   wrapRequestHandler(updateMeController)
 )
 
