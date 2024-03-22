@@ -53,5 +53,14 @@ export const USERS_MESSAGES = {
   COVER_PHOTO_LENGTH: 'Cover photo length must be from 1 to 100',
   IMAGE_URL_MUST_BE_STRING: 'Image url must be a string',
   IMAGE_URL_LENGTH: 'Image url length must be from 1 to 100',
-  GET_PROFILE_SUCCESS: 'Get profile success'
+  GET_PROFILE_SUCCESS: 'Get profile success',
+  FOLLOW_SUCCESS: 'Follow success',
+  INVALID_FOLLOWED_USER_ID: 'Invalid followed user id',
+  FOLLOWED: 'Followed',
+  UNFOLLOW_SUCCESS: 'Unfollow success',
+  INVALID_USER_ID: 'Invalid user id',
+  ALREADY_UNFOLLOWED: 'Already unfollowed',
+  USERNAME_INVALID:
+    'Username musbe 4 - 15 characters long and contain only letters, numbers, underscores, and dots, not only number',
+  USERNAME_ALREADY_EXISTS: 'Username already exists'
 } as const

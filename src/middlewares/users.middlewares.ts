@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { ParamSchema, checkSchema } from 'express-validator'
+import { ParamSchema, check, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
-import { capitalize } from 'lodash'
+import { capitalize, values } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
@@ -13,6 +13,7 @@ import userService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
+import { REGEX_USERNAME } from './common/regex'
 
 const passwordSchema: ParamSchema = {
   notEmpty: {
@@ -154,6 +155,26 @@ const dateOfBirthSchema: ParamSchema = {
     errorMessage: USERS_MESSAGES.DATE_OF_BIRTH_MUST_BE_ISO8601
   }
 }
+const userIdSchema: ParamSchema = {
+  custom: {
+    options: async (value: string, { req }) => {
+      if (!ObjectId.isValid(value)) {
+        throw new ErrorWithStatus({
+          message: USERS_MESSAGES.INVALID_USER_ID,
+          status: HTTP_STATUS.NOT_FOUND
+        })
+      }
+      const followed_user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+      if (followed_user === null) {
+        throw new ErrorWithStatus({
+          message: USERS_MESSAGES.INVALID_USER_ID,
+          status: HTTP_STATUS.NOT_FOUND
+        })
+      }
+    }
+  }
+}
+
 /**
  * Validates the login request body.
  * @param value - The value to be validated.
@@ -345,7 +366,6 @@ export const accessTokenValidator = validate(
         custom: {
           options: async (value: string, { req }) => {
             const access_token = (value || '').split(' ')[1]
-            console.log('access_token', access_token)
             if (!access_token) {
               throw new ErrorWithStatus({
                 message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
@@ -511,8 +531,6 @@ export const resetPasswordValidator = validate(
 
 export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
   const { verify } = req.decoded_authorization as TokenPayload
-  console.log('decoded_authorization: ' + JSON.stringify(req.decoded_authorization))
-  console.log('status verify: ' + verify)
   if (verify !== UserVerifyStatus.Verified) {
     return next(
       new ErrorWithStatus({
@@ -587,18 +605,38 @@ export const updateMeValidator = validate(
           errorMessage: USERS_MESSAGES.USERNAME_MUST_BE_A_STRING
         },
         trim: true,
-
-        isLength: {
-          options: {
-            min: 1,
-            max: 50
-          },
-          errorMessage: USERS_MESSAGES.USER_NAME_LENGTH
+        custom: {
+          options: async (value, { req }) => {
+            if (!REGEX_USERNAME.test(value)) {
+              throw new Error(USERS_MESSAGES.USERNAME_INVALID)
+            }
+            const user = await databaseService.users.findOne({ username: value })
+            //Neu da ton tai username trong  document mongoDB thi khong cho update
+            if (user) {
+              throw new Error(USERS_MESSAGES.USERNAME_ALREADY_EXISTS)
+            }
+          }
         }
       },
       avatar: imageSchema,
       cover_photo: imageSchema
     },
     ['body']
+  )
+)
+export const followValidator = validate(
+  checkSchema(
+    {
+      followed_user_id: userIdSchema
+    },
+    ['body']
+  )
+)
+export const unfollowedValidator = validate(
+  checkSchema(
+    {
+      user_id: userIdSchema
+    },
+    ['params']
   )
 )
