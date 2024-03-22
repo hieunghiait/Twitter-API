@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
+  FollowReqBody,
   ForgotPasswordReqBody,
   GetProfileReqParams,
   LoginReqBody,
@@ -8,6 +9,7 @@ import {
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
+  UnfollowReqParams,
   UpdateMeRequestBody,
   VerifyEmailReqBody
 } from '~/models/requests/User.request'
@@ -18,8 +20,6 @@ import databaseService from '~/services/database.services'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import User from '~/models/schemas/User.schema'
-import { pick } from 'lodash'
-import { body } from 'express-validator'
 
 /**
  * Handles the login functionality for users.
@@ -184,10 +184,38 @@ export const updateMeController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { body } = req
-  console.log('log body' + body)
   const user = await usersService.updateMe(user_id, body)
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result: user
+  })
+}
+
+export const followController = async (
+  req: Request<ParamsDictionary, any, FollowReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  console.log('log user_id: ' + user_id)
+  console.log('log followed_user_id: ' + followed_user_id)
+  const user = await usersService.followers(user_id, followed_user_id)
+  return res.json({
+    message: USERS_MESSAGES.FOLLOW_SUCCESS,
+    result: user
+  })
+}
+export const unfollowController = async (
+  req: Request<ParamsDictionary, any, UnfollowReqParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { user_id: followed_user_id } = req.params
+  const user = await usersService.unfollowers(user_id, followed_user_id)
+  return res.json({
+    message: USERS_MESSAGES.UNFOLLOW_SUCCESS,
     result: user
   })
 }

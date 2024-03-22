@@ -10,6 +10,7 @@ import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
+import Follower from '~/models/schemas/Follower.schema'
 config()
 
 class UsersService {
@@ -265,6 +266,50 @@ class UsersService {
       })
     }
     return user
+  }
+  async followers(user_id: string, followed_user_id: string) {
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(user_id),
+      follower_user_id: new ObjectId(followed_user_id)
+    })
+    console.log('log follower: ', follower)
+    if (follower === null) {
+      // Chưa follow thì tiến hành follow
+      await databaseService.followers.insertOne(
+        new Follower({
+          user_id: new ObjectId(user_id),
+          follower_user_id: new ObjectId(followed_user_id)
+        })
+      )
+      return {
+        message: USERS_MESSAGES.FOLLOW_SUCCESS
+      }
+    }
+    //Nếu như đã follow trước đó rồi thì tiến hành show message đã follow
+    return {
+      message: USERS_MESSAGES.ALREADY_UNFOLLOWED
+    }
+  }
+  async unfollowers(user_id: string, followed_user_id: string) {
+    //Tìm trong document followers xem đã follow chưa
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(user_id),
+      follower_user_id: new ObjectId(followed_user_id)
+    })
+    //Nếu chưa followe thì trả về message là chưa follow
+    if (follower === null) {
+      return {
+        message: USERS_MESSAGES.ALREADY_UNFOLLOWED
+      }
+    }
+    //Tiến hành xóa
+    await databaseService.followers.deleteOne({
+      user_id: new ObjectId(user_id),
+      follower_user_id: new ObjectId(followed_user_id)
+    })
+    return {
+      message: USERS_MESSAGES.UNFOLLOW_SUCCESS
+    }
   }
 }
 const usersService = new UsersService()
