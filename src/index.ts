@@ -4,10 +4,13 @@ import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
-
+import { config } from 'dotenv'
+import argv from 'minimist'
+const options = argv(process.argv.slice(2))
+config()
 const app = express()
-const port = 3000
-
+const port = process.env.PORT || 3000
+console.log(options)
 //Tạo folder upload
 initFolder()
 //connect to database local
