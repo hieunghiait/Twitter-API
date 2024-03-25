@@ -117,6 +117,11 @@ class UsersService {
   }
   async logout(refresh_token: string) {
     const result = await databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    if (!result) {
+      return {
+        message: USERS_MESSAGES.LOGOUT_FAILED
+      }
+    }
     return {
       message: USERS_MESSAGES.LOGOUT_SUCCESS
     }
@@ -140,6 +145,10 @@ class UsersService {
       ])
     ])
     const [access_token, refresh_token] = token
+    console.log('access_token: ', access_token)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
+    )
     return {
       access_token,
       refresh_token
@@ -309,6 +318,35 @@ class UsersService {
     })
     return {
       message: USERS_MESSAGES.UNFOLLOW_SUCCESS
+    }
+  }
+  async changePassword(user_id: string, password: string, old_password: string) {
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    if (user.password !== hashPassword(old_password)) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT,
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    }
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          password: hashPassword(password)
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    return {
+      message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS
     }
   }
 }
