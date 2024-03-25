@@ -6,6 +6,8 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import argv from 'minimist'
+import { UPLOAD_DIR } from './constants/dir'
+
 const options = argv(process.argv.slice(2))
 config()
 const app = express()
@@ -13,15 +15,15 @@ const port = process.env.PORT || 3000
 console.log(options)
 //Tạo folder upload
 initFolder()
-//connect to database local
 databaseService.connect()
 app.use(express.json())
 
 //Khai báo route cho users
 app.use('/users', usersRouter)
-
 //Khai báo route cho medias
 app.use('/medias', mediasRouter)
+//Khai báo route
+app.use('/static', express.static(UPLOAD_DIR))
 // Error handler
 app.use(defaultErrorHandler)
 app.listen(port, () => {
