@@ -62,5 +62,9 @@ export const USERS_MESSAGES = {
   ALREADY_UNFOLLOWED: 'Already unfollowed',
   USERNAME_INVALID:
     'Username musbe 4 - 15 characters long and contain only letters, numbers, underscores, and dots, not only number',
-  USERNAME_ALREADY_EXISTS: 'Username already exists'
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
+  CHANGE_PASSWORD_SUCCESS: 'Change password success',
+  CHANGE_PASSWORD_FAIL: 'Change password fail',
+  PASSWORD_NOT_MATCH: 'Password not match',
+  LOGOUT_FAILED: 'Logout failed'
 } as const

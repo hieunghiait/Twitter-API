@@ -219,3 +219,22 @@ export const unfollowController = async (
     result: user
   })
 }
+export const changePasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { old_password, new_password } = req.body
+  if (old_password !== new_password) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      message: USERS_MESSAGES.PASSWORD_NOT_MATCH
+    })
+  }
+  const result = await usersService.changePassword(user_id, old_password, new_password)
+  if (!result) {
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+      message: USERS_MESSAGES.CHANGE_PASSWORD_FAIL
+    })
+  }
+  return res.json({
+    message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS,
+    result
+  })
+}

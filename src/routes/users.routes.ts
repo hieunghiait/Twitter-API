@@ -152,4 +152,18 @@ usersRouter.delete(
   unfollowedValidator,
   wrapRequestHandler(unfollowController)
 )
+/**
+ * Description. Change password
+ * Path: /change-password
+ * Method: PUT
+ * Header {Authorization: Bearer <access_token>}
+ * Body: {oldpassword: string, password: string, confirm_password: string}
+ */
+usersRouter.put('/change-password', accessTokenValidator, wrapRequestHandler(updateMeController))
+/**
+ * Export the express router instance.
+ * @type {Router}
+ * @const
+ * @default
+ */
 export default usersRouter
