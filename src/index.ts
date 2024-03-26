@@ -7,6 +7,7 @@ import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import argv from 'minimist'
 import { UPLOAD_DIR } from './constants/dir'
+import staticRouter from './routes/static.routes'
 
 const options = argv(process.argv.slice(2))
 config()
@@ -22,8 +23,8 @@ app.use(express.json())
 app.use('/users', usersRouter)
 //Khai báo route cho medias
 app.use('/medias', mediasRouter)
-//Khai báo route
-app.use('/static', express.static(UPLOAD_DIR))
+//Khai báo route cho static
+app.use('/static', staticRouter)
 // Error handler
 app.use(defaultErrorHandler)
 app.listen(port, () => {

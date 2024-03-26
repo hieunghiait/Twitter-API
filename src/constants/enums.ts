@@ -9,3 +9,8 @@ export enum TokenType {
   ForgotPasswordToken, // 2
   EmailVerifyToken // 3
 }
+//Khai báo thêm MediaType
+export enum MediaType {
+  Image,
+  Video
+}
