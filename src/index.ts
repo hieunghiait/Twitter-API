@@ -6,7 +6,7 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import argv from 'minimist'
-import { UPLOAD_DIR } from './constants/dir'
+import { UPLOAD_IMAGE_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 
 const options = argv(process.argv.slice(2))

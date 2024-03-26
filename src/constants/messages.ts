@@ -67,5 +67,5 @@ export const USERS_MESSAGES = {
   CHANGE_PASSWORD_FAIL: 'Change password fail',
   PASSWORD_NOT_MATCH: 'Password not match',
   LOGOUT_FAILED: 'Logout failed',
-  UPLOAD_SUCCESS: 'Upload success'
+  UPLOAD_SUCCESS: 'Upload successfully'
 } as const
